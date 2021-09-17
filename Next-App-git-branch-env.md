@@ -1,6 +1,4 @@
-# Gestion des environnements pour une application Next.js hebergée sur Vercel
-
-It has something to do with the next.config.js.
+# Nom de la branch git dans les variables d'environnement sur Next.JS
 
 1. Installer le package
 `npm i current-git-branch --save-dev`
@@ -16,7 +14,5 @@ module.exports = {
 };
 ```
 
-3. La branche est désormails accessible depuis le code
+3. La branche est désormais accessible depuis le code
 `console.log(process.env.GIT_BRANCH);`
-
-A suivre...
