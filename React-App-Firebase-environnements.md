@@ -1,5 +1,5 @@
-# Gestion des environnements pour une application React.js ebergée sur Firebase
-------
+# Gestion des environnements pour une application React.js hebergée sur Firebase
+
 on a `.env.development` et `.env.production` qui correspondent aux variables d'environnement en mode développement et production.
 On veut créer une version staging de notre application en production.
 
