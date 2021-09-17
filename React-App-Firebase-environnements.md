@@ -22,3 +22,54 @@ On veut créer une version staging de notre application en production.
 
 1. `npm run build`
 2. `firebase deploy`
+
+## En cas de soucis
+
+Au moment du deploiement de la version de staging sur firebase, si on a une erreur du type :
+`The "path" argument must be of type string. Received type undefined`
+
+Essayer ça :
+1. Dans `firebase.json` remplacer :
+
+```JSON
+{
+  "hosting": {
+    "public": "build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
+```
+
+par :
+
+```JSON
+{
+  "hosting": {
+    "public": "build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
+```
+2. `firebase deploy -P staging`
+3. Remettre firebase.json comme avant
+4. `firebase deploy -P staging`
