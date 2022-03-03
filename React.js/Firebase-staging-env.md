@@ -21,7 +21,7 @@ On veut créer une version staging de notre application en production.
 ### Déploiement en production
 
 1. `npm run build`
-2. `firebase deploy`
+2. `firebase deploy -P default`
 
 ## En cas de soucis
 
