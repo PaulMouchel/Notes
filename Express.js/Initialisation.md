@@ -30,6 +30,15 @@ A la racine du répertoire, créer le fichier `server.js`.
 
 A partir de maintenant, on peut executer la commande `npm run devStart` sur le terminal pour executer le code du fichier `server.js`.
 
+# Alternative : Création d'un projet Express.js avec express-draf
+Installation globale de express-draft :
+
+    npm i -g express-draft
+    
+Création du projet Express:
+
+    exp .
+
 ## Infos supplémentaires
 
 ### utiliser les instruction ES6
