@@ -1,5 +1,6 @@
 # React Testing Library
 
+Ce document est créé à partir des exemple de la série React Testing Library Tutorial de la chaine The Net Ninja
 ## Exemple de test
 
 ```Javascript
@@ -154,4 +155,129 @@ describe("TodoFooter", () )> {
 ```
 
 ## Test des évenements
+
+Test d'un composant input
+
+```Javascript
+import { render, screen, fireEvent } from '@testing-library/react';
+import AddInput from "../AddInput"
+
+const mockedSetTodo = jest.fn();
+
+it('should render input element', () => {
+    render(
+        <AddInput 
+            todos={[]}
+            setTodos={mockedSetTodo}
+        />
+    );
+    const inputElement = screen.getByPlaceholderText(/Add a new task here.../i);
+    expect(inputElement).toBeInTheDocument();
+});
+
+it('should be able to type into input', () => {
+    render(
+        <AddInput 
+            todos={[]}
+            setTodos={mockedSetTodo}
+        />
+    );
+    const inputElement = screen.getByPlaceholderText(/Add a new task here.../i);
+    fireEvent.click(inputElement)
+    fireEvent.change(inputElement, { target: { value: "Go Grocery Shopping" } })
+    expect(inputElement.value).toBe("Go Grocery Shopping");
+});
+
+it('should be able to type into input', () => {
+    render(
+        <AddInput 
+            todos={[]}
+            setTodos={mockedSetTodo}
+        />
+    );
+    const inputElement = screen.getByPlaceholderText(/Add a new task here.../i);
+    fireEvent.click(inputElement)
+    fireEvent.change(inputElement, { target: { value: "Go Grocery Shopping" } });
+    const buttonElement = screen.getByRole("button", { name: /Add/i});
+    fireEvent.click(buttonElement)
+    expect(mockedSetTodo).toBeCalled()
+});
+
+it('should have empty input when add button is cliked', () => {
+    render(
+        <AddInput 
+            todos={[]}
+            setTodos={mockedSetTodo}
+        />
+    );
+    const inputElement = screen.getByPlaceholderText(/Add a new task here.../i);
+    fireEvent.change(inputElement, { target: { value: "Go Grocery Shopping" } });
+    const buttonElement = screen.getByRole("button", { name: /Add/i});
+    fireEvent.click(buttonElement)
+    expect(inputElement.value).toBe("")
+});
+```
+## Création d'un test d'integration
+
+Le principe est le même, mais on test un composant parent
+
+```Javascript
+import { render, screen, fireEvent } from '@testing-library/react';
+import Todo from "../Todo"
+import { BrowserRouter } from "react-router-dom"
+
+const MockTodo = () => {
+    return (
+        <BrowserRouter>
+          <Todo/>
+        </BrowserRouter>
+    )
+}
+
+const addTask = (tasks) => {
+    const inputElement = screen.getByPlaceholderText(/Add a new task here.../i);
+    const buttonElement = screen.getByRole("button", { name: /Add/i} );
+    tasks.forEach((task) => {
+        fireEvent.change(inputElement, { target: { value: task } });
+        fireEvent.click(buttonElement);
+    })
+}
+
+it('should be able to type into input', () => {
+    render(
+        <MockTodo />
+    );
+    addTask(["Go Grocery Shopping"])
+    const divElement = screen.getByText(/Go Grocery Shopping/i);
+    expect(divElement).toBeInTheDocument()
+});
+
+it('should render multiple items', () => {
+    render(
+        <MockTodo />
+    );
+    addTask(["Go Grocery Shopping", "Go Grocery Shopping", "Go Grocery Shopping"])
+    const divElements = screen.queryAllByText(/Go Grocery Shopping/i);
+    expect(divElements.length).toBe(3)
+});
+
+it('task should not have complete class when initally rendered', () => {
+    render(
+        <MockTodo />
+    );
+    addTask(["Go Grocery Shopping"])
+    const divElement = screen.getByText(/Go Grocery Shopping/i);
+    expect(divElement).not.toHaveClass("todo-item-active")
+});
+
+it('task should have complete class when clicked', () => {
+    render(
+        <MockTodo />
+    );
+    addTask(["Go Grocery Shopping"])
+    const divElement = screen.getByText(/Go Grocery Shopping/i);
+    fireEvent.click(divElement)
+    expect(divElement).toHaveClass("todo-item-active")
+});
+```
 
