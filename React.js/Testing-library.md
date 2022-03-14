@@ -281,3 +281,137 @@ it('task should have complete class when clicked', () => {
 });
 ```
 
+## Tests avec données asynchrones (fetch data dans useEffect)
+
+sous le dossier `src`, creer un nouveau dossier `__mocks__`
+
+Pour simuler le comportement d'axios (par exemple), on créé un fichier axios.js (sous /__mocks__)
+
+```Javascript
+const mockResponse = {
+    data: {
+        results: [
+            {
+                name: {
+                    fist: "Laith",
+                    last: "Harb"
+                },
+                picture: {
+                    large: "https://randomuser.me/api/portraits/men/39.jpg"
+                },
+                login: {
+                    username: "ThePhonyGOAT"
+                }
+            }
+        ]
+    }
+}
+
+export default {
+    get: jest.fn()
+}
+```
+
+Pour que les test passent, il mettre dans package.json :
+
+```json
+"jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}"
+    ],
+    "resetMocks": false
+}
+```
+On peut esuite écrire ses tests:
+
+```Javascript
+import { render, screen, fireEvent } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import FollowersList from "../FollowersList";
+
+const MockFollowersList = () => {
+    return (
+        <BrowserRouter>
+            <FollowersList />
+        </BrowserRouter>
+    )
+}
+
+describe("FollowersList", () => {
+
+    beforeEach(() => {
+        jest.mock("../../../__mocks__/axios")
+    })
+
+    it('should fetch and render input element', async () => {
+        render(
+            <MockFollowersList />
+        );
+        const followerDivElement = await screen.findByTestId(`follower-item-0`)
+        expect(followerDivElement).toBeInTheDocument();
+    });
+    
+    it('should fetch and render input element', async () => {
+        render(
+            <MockFollowersList />
+        );
+    
+        const followerDivElement = await screen.findByTestId(`follower-item-0`)
+        screen.debug()
+        expect(followerDivElement).toBeInTheDocument();
+    });
+})
+```
+
+## Executer du code avant/après les tests
+
+```Javascript
+import { render, screen, fireEvent } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import FollowersList from "../FollowersList";
+
+const MockFollowersList = () => {
+    return (
+        <BrowserRouter>
+            <FollowersList />
+        </BrowserRouter>
+    )
+}
+
+describe("FollowersList", () => {
+
+    beforeEach(() => {
+        console.log("RUNS BEFORE EACH TEST")
+        jest.mock("../../../__mocks__/axios")
+    })
+
+    beforeAll(() => {
+        console.log("RUNS ONCE BEFORE ALL TESTS")
+    })
+
+    afterEach(() => {
+        console.log("RUNS AFTER EACH TEST")
+    })
+
+    afterAll(() => {
+        console.log("RUNS ONCE AFTER ALL TESTS")
+    })
+
+    it('should fetch and render input element', async () => {
+        render(
+            <MockFollowersList />
+        );
+        const followerDivElement = await screen.findByTestId(`follower-item-0`)
+        expect(followerDivElement).toBeInTheDocument();
+    });
+    
+    it('should fetch and render input element', async () => {
+        render(
+            <MockFollowersList />
+        );
+    
+        const followerDivElement = await screen.findByTestId(`follower-item-0`)
+        expect(followerDivElement).toBeInTheDocument();
+    });
+})
+```
